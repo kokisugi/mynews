@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\History;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Profiles;
 use Symfony\Component\HttpKernel\Profiler\Profile;
+use App\Profile_history;
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
@@ -34,6 +37,7 @@ class ProfileController extends Controller
         if (empty($profile)) {
             abort(404);
         }
+        //$profile_histories = Profile_history::find(1);
         return view('admin.profile.edit', ['profile_form' => $profile]);
     }
 
@@ -49,6 +53,11 @@ class ProfileController extends Controller
 
         // 該当するデータを上書きして保存する
         $profile->fill($profile_form)->save();
+
+        $history = new Profile_history;
+        $history->profiles_id = $profile->id;
+        $history->edited_at = Carbon::now();
+        $history->save();
         
         return redirect('admin/profile/edit');
     }
