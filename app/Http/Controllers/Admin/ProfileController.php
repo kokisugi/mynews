@@ -31,9 +31,9 @@ class ProfileController extends Controller
         return redirect('admin/profile/create');
     }
 
-    public function edit()
+    public function edit(Request $request)
     {
-        $profile = Profiles::find(1);
+        $profile = Profiles::find($request->id);
         if (empty($profile)) {
             abort(404);
         }
